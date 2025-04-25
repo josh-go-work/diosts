@@ -1,3 +1,10 @@
+![Go](https://github.com/josh-go-work/diosts/actions/workflows/go.yml/badge.svg)
+
+### What’s in this fork
+* Adds RFC 9116 optional fields (Preferred-Languages, Canonical, Acknowledgments, Hiring)
+* `--lint-json` flag (stub) – writes `[{"todo":"implement lint"}]`
+* Unit tests passing; CI green
+
 # diosts
 
 The disclose.io security.txt scraper (`diosts`) takes a list of domains as the input, retrieves and validates the `security.txt` if available and outputs it in the disclose.io JSON format.
