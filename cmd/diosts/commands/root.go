@@ -1,6 +1,9 @@
 package commands
 
 import (
+	"fmt"
+	"os"
+
 	"github.com/rs/zerolog"
 	"github.com/rs/zerolog/log"
 	"github.com/spf13/cobra"
@@ -9,6 +12,7 @@ import (
 )
 
 var runConfig = run.NewConfig()
+var lintJSON string
 
 var rootCmd = &cobra.Command{
 	Use:   "diosts",
@@ -35,6 +39,12 @@ func init() {
 		"non-compliant", "n",
 		"",
 		"Path to output file for non-RFC-compliant security.txt files",
+	)
+
+	rootCmd.Flags().StringVar(&lintJSON,
+		"lint-json",
+		"",
+		"write non-compliant records to JSON (stub)",
 	)
 
 	rootCmd.Flags().BoolVar(&runConfig.SecurityTxt.StrictRedirect,
@@ -71,6 +81,13 @@ func onRun(version string) {
 
 	if err := app.Run(); err != nil {
 		log.Fatal().Err(err).Msg("")
+	}
+
+	if lintJSON != "" {
+		if err := os.WriteFile(lintJSON, []byte(`[{"todo":"implement lint"}]`), 0o644); err != nil {
+			log.Fatal().Err(err).Msg("failed to write lint JSON")
+		}
+		fmt.Printf("stub JSON written to %s\n", lintJSON)
 	}
 
 	log.Info().Msg("all done. bye bye!")

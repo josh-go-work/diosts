@@ -46,7 +46,7 @@ type Fields struct {
 	PGPKey                 string     `json:"pgp_key,omitempty"`
 	Hiring                 string     `json:"hiring,omitempty"`
 	SecuritytxtURL         string     `json:"securitytxt_url,omitempty"`
-	PreferredLanguages     string     `json:"preferred_languages,omitempty"`
+	PreferredLanguages     []string   `json:"preferred_languages,omitempty"`
 	ExpiresAt              *time.Time `json:"expires_at,omitempty"`
 	RFCCompliant           bool       `json:"rfc_compliant,omitempty"`
 	ComplianceIssues       []string   `json:"compliance_issues,omitempty"`

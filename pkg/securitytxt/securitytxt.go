@@ -2,6 +2,7 @@ package securitytxt
 
 import (
 	"fmt"
+	"strings"
 	"time"
 )
 
@@ -9,18 +10,18 @@ import (
 // Note: we don't use the format tag yet.
 type SecurityTxt struct {
 	// Official fields
-	Acknowledgments    []string `format:"secure-url"`
-	Canonical          []string `format:"secure-url"`
-	Contact            []string `format:"contact-uri"`
-	Encryption         []string `format:"key-uri"`
-	Expires            time.Time
-	Hiring             []string `format:"secure-url"`
-	Policy             []string `format:"secure-url"`
-	PreferredLanguages string   `format:"rfc5646"`
+	Acknowledgments    []string  `format:"secure-url" json:"acknowledgments,omitempty"`
+	Canonical          []string  `format:"secure-url" json:"canonical,omitempty"`
+	Contact            []string  `format:"contact-uri" json:"contact,omitempty"`
+	Encryption         []string  `format:"key-uri" json:"encryption,omitempty"`
+	Expires            time.Time `json:"expires,omitempty"`
+	Hiring             []string  `format:"secure-url" json:"hiring,omitempty"`
+	Policy             []string  `format:"secure-url" json:"policy,omitempty"`
+	PreferredLanguages []string  `format:"rfc5646" json:"preferred_languages,omitempty"`
 
 	// Other useful fields
-	Domain        string
-	RetrievedFrom string
+	Domain        string `json:"domain,omitempty"`
+	RetrievedFrom string `json:"retrieved_from,omitempty"`
 
 	// RFC compliance tracking
 	IsRFCCompliant   bool
@@ -91,7 +92,15 @@ func (t *SecurityTxt) AssignField(field *Field) error {
 	case "policy":
 		return assignListValue(&t.Policy, field)
 	case "preferred-languages":
-		return assignStringValue(&t.PreferredLanguages, field)
+		// Split by comma and trim each language tag
+		langs := strings.Split(field.Value, ",")
+		for _, lang := range langs {
+			trimmed := strings.TrimSpace(lang)
+			if trimmed != "" {
+				t.PreferredLanguages = append(t.PreferredLanguages, trimmed)
+			}
+		}
+		return nil
 	default:
 		t.IsRFCCompliant = false
 		t.ComplianceIssues = append(t.ComplianceIssues, "Contains unknown field: "+field.Key)
